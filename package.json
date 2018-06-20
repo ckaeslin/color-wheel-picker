@@ -1,5 +1,6 @@
 {
   "name": "color-wheel",
+  "version": "0.0.1",
   "description": "color picker with D3 (kuler-d3)",
   "main": "color-wheel.js",
   "dependencies": {
