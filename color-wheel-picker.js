@@ -20,6 +20,15 @@ class ColorWheelPicker extends PolymerElement {
 
   static get importMeta() { return import.meta; }
 
+  static get properties () {
+    return {
+      point: {
+        type: Object,
+        observe: _pointChanged,
+      },
+    }
+  }
+
   createElements() {
     this.options = {
       container: this.$.container,
@@ -50,19 +59,19 @@ class ColorWheelPicker extends PolymerElement {
         diameter + 2 * this.options.margin
       ].join(' '));
 
-    const circle = this.wheel.append('circle');
+    /*const circle = this.wheel.append('circle');
     circle.attr('fill', 'black')
       .attr('r', this.options.radius)
       .attr('cx', this.options.radius)
       .attr('cy', this.options.radius)
-      .attr('transform', 'translate(4, 4)');
+      .attr('transform', 'translate(4, 4)');*/
 
     const image = this.wheel.append('image');
     image.attr('width', diameter)
       .attr('height', diameter)
       .attr('xlink:href', `${this.importPath}/wheel.png`);
 
-    this.markerTrails = this.wheel.append('g');
+    // this.markerTrails = this.wheel.append('g');
     this.markers = this.wheel.append('g');
 
     // --- Events ---
@@ -70,6 +79,8 @@ class ColorWheelPicker extends PolymerElement {
     this.dispatch = d3.dispatch(
       // Markers datum has changed, so redraw as necessary, etc.
       'markersUpdated',
+
+      'markersUpdatedPoint',
 
       // "updateEnd" means the state of the ColorWheelPicker has been finished updating.
       'updateEnd',
@@ -100,7 +111,7 @@ class ColorWheelPicker extends PolymerElement {
           return this.hexFromHS(d.color.h, d.color.s);
         });
 
-      this.container.selectAll(this.selector('marker-trail'))
+      /*this.container.selectAll(this.selector('marker-trail'))
         .attr('x2', (d) => {
           const p = this.getSVGPositionFromHS(d.color.h, d.color.s);
           return p.x;
@@ -111,6 +122,20 @@ class ColorWheelPicker extends PolymerElement {
         })
         .attr('visibility', (d) => {
           return d.show ? 'visible' : 'hidden';
+        });*/
+    });
+
+    this.dispatch.on('markersUpdatedPoint.default', () => {
+      const markers = this.getMarkers();
+      markers.attr('transform', (d) =>{
+          return ['translate(' + [this.point.x, this.point.y].join() + ')'].join(' ');
+        })
+        .attr('visibility', (d) => {
+          return d.show ? 'visible' : 'hidden';
+        });
+      markers.select('circle')
+        .attr('fill', (d) => {
+          return this.hexFromHS(d.color.h, d.color.s);
         });
     });
 
@@ -125,6 +150,14 @@ class ColorWheelPicker extends PolymerElement {
       if (typeof ColorWheelPicker.plugins[pluginId] == 'function') {
         ColorWheelPicker.plugins[pluginId](this);
       }
+    }
+
+    this.__isReady = true;
+  }
+
+  _pointChanged() {
+    if (this.__isReady === true) {
+      this.dispatch.call('markersUpdatedPoint', this);
     }
   }
 
@@ -143,7 +176,7 @@ class ColorWheelPicker extends PolymerElement {
         new ColorWheelPickerMarkerDatum(initRoot, null, true));
     }
 
-    const markerTrails = this.markerTrails.selectAll(this.selector('marker-trail')).data(data);
+    /*const markerTrails = this.markerTrails.selectAll(this.selector('marker-trail')).data(data);
 
     markerTrails.enter()
       .append('line')
@@ -155,7 +188,7 @@ class ColorWheelPicker extends PolymerElement {
       .attr('stroke-width', 3)
       .attr('stroke-dasharray', '10, 6');
 
-    markerTrails.exit().remove();
+    markerTrails.exit().remove();*/
 
     const markers = this.markers.selectAll(this.selector('marker')).data(data);
 
@@ -193,6 +226,7 @@ class ColorWheelPicker extends PolymerElement {
     return d3.drag()
       .on('drag', function(d) {
         const pos = self.pointOnCircle(d3.event.x, d3.event.y);
+        this.point = { x: pos.x, y: pos.y };
         const hs = self.getHSFromSVGPosition(pos.x, pos.y);
         d.color.h = hs.h;
         d.color.s = hs.s;
