@@ -1,0 +1,16 @@
+{
+  "name": "color-wheel",
+  "description": "color picker with D3 (kuler-d3)",
+  "main": "color-wheel.js",
+  "dependencies": {
+    "@polymer/iron-image": "^3.0.0-pre.19",
+    "@polymer/polymer": "^3.0.0",
+    "@thebespokepixel/es-tinycolor": "^0.2.7",
+    "d3": "^5.4.0"
+  },
+  "devDependencies": {
+    "@polymer/iron-demo-helpers": "^3.0.0-pre.19",
+    "@webcomponents/webcomponentsjs": "^2.0.0",
+    "wct-browser-legacy": "^1.0.0"
+  }
+}
