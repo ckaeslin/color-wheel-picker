@@ -20,13 +20,6 @@ class ColorWheelPicker extends PolymerElement {
 
   static get importMeta() { return import.meta; }
 
-  connectedCallback() {
-    super.connectedCallback();
-
-    // render
-    console.log(this.radius);
-  }
-
   createElements() {
 
     const markerWidth = this.markerWidth || 40;
@@ -157,7 +150,7 @@ class ColorWheelPicker extends PolymerElement {
     this.__isReady = true;
   }
 
-  _pointChanged(newValue, oldValue) {
+  _pointChanged() {
     if (this.__isReady === true) {
       this.dispatch.call('markersUpdatedPoint', this);
     }
@@ -228,7 +221,7 @@ class ColorWheelPicker extends PolymerElement {
     return d3.drag()
       .on('drag', function(d) {
         const pos = self.pointOnCircle(d3.event.x, d3.event.y);
-        this.point = { x: pos.x, y: pos.y };
+        self.point = { x: pos.x, y: pos.y };
         const hs = self.getHSFromSVGPosition(pos.x, pos.y);
         d.color.h = hs.h;
         d.color.s = hs.s;
