@@ -717,7 +717,6 @@ class ColorWheelPicker extends PolymerElement {
       point: {
         type: Object,
         observe: '_pointChanged',
-        notify: true,
       },
       radius:  Number,
       markerWidth: {
