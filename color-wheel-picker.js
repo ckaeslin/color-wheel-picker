@@ -20,22 +20,24 @@ class ColorWheelPicker extends PolymerElement {
 
   static get importMeta() { return import.meta; }
 
-  static get properties () {
-    return {
-      point: {
-        type: Object,
-        observe: _pointChanged,
-      },
-    }
+  connectedCallback() {
+    super.connectedCallback();
+
+    // render
+    console.log(this.radius);
   }
 
   createElements() {
+
+    const markerWidth = this.markerWidth || 40;
+    const radius = this.radius || 175;
+    console.log(radius);
     this.options = {
       container: this.$.container,
       svg: this.$.svg,
-      radius       : 175,
-      margin       : 40, // space around the edge of the wheel
-      markerWidth  : 40,
+      radius       : radius,
+      margin       : markerWidth / 2, // space around the edge of the wheel
+      markerWidth  : markerWidth,
       defaultSlice : 20,
       initRoot     : 'red',
       initMode     : ColorWheelPicker.modes.ANALOGOUS,
@@ -155,7 +157,7 @@ class ColorWheelPicker extends PolymerElement {
     this.__isReady = true;
   }
 
-  _pointChanged() {
+  _pointChanged(newValue, oldValue) {
     if (this.__isReady === true) {
       this.dispatch.call('markersUpdatedPoint', this);
     }
@@ -557,9 +559,9 @@ class ColorWheelPicker extends PolymerElement {
           position: relative;
           z-index: 1;
           display: block;
-          width: 400px;
-          height: 400px;
-          margin: 60px auto 0; }
+          width: 100%;
+          height: auto;
+          margin: 5px auto 0; }
 
         .ColorWheelPicker-marker:first-child circle {
           stroke-opacity: 1;
@@ -575,7 +577,7 @@ class ColorWheelPicker extends PolymerElement {
           text-align: center;
           max-width: 450px;
           min-width: 350px;
-          margin: 10px auto 0; }
+          margin: 5px auto 0; }
 
         .ColorWheelPicker-theme-swatch {
           flex: 1;
@@ -709,13 +711,19 @@ class ColorWheelPicker extends PolymerElement {
 
     `;
   }
-  static get properties() {
+
+  static get properties () {
     return {
-      prop1: {
-        type: String,
-        value: 'color-wheel-picker',
+      point: {
+        type: Object,
+        observe: '_pointChanged',
+        notify: true,
       },
-    };
+      radius:  Number,
+      markerWidth: {
+        type: Number,
+      },
+    }
   }
 }
 

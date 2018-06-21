@@ -1,8 +1,8 @@
 {
-  "name": "color-wheel",
-  "version": "0.0.1",
-  "description": "color picker with D3 (kuler-d3)",
-  "main": "color-wheel.js",
+  "name": "color-wheel-picker",
+  "version": "0.0.3",
+  "description": "color wheel picker with D3 (kuler-d3)",
+  "main": "color-wheel-picker.js",
   "dependencies": {
     "@polymer/iron-image": "^3.0.0-pre.19",
     "@polymer/polymer": "^3.0.0",
